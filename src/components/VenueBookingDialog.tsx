@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { format, addDays, isSameDay, isAfter, startOfDay } from "date-fns";
+import { format, addDays, startOfDay } from "date-fns";
 import { Calendar as CalendarIcon, Clock, Mail, Send, CheckCircle, Loader2 } from "lucide-react";
 import { sendBookingEmail } from "@/lib/emailjs";
 import { useToast } from "@/hooks/use-toast";
@@ -26,69 +26,26 @@ import {
   getVenueAvailability, 
   isDayFullyBooked, 
   getAvailableSlots,
-  TimeSlot 
 } from "@/data/venueAvailability";
 import { cn } from "@/lib/utils";
+import {useLanguage} from "@/contexts/LanguageContext.tsx";
+import { translations } from "@/lib/translations";
+
 
 interface VenueBookingDialogProps {
   venue: Venue;
   isOpen: boolean;
   onClose: () => void;
-  language: "en" | "arm";
 }
-
-const translations = {
-  en: {
-    title: "Book Venue",
-    selectDate: "Select a Date",
-    fullyBooked: "Fully Booked",
-    available: "Available",
-    selectTime: "Select Start Time",
-    selectHours: "How many hours?",
-    hours: "hours",
-    email: "Your Email",
-    emailPlaceholder: "Enter your email address",
-    emailError: "Please enter a valid email address",
-    submit: "Submit Booking Request",
-    submitting: "Sending...",
-    success: "Request Sent!",
-    successMessage: "Your booking request has been submitted. You will receive an approval notification at your email address.",
-    close: "Close",
-    noAvailability: "No availability data for this date",
-    selectDateFirst: "Please select a date first",
-    emailSent: "Booking request sent successfully!",
-    emailFailed: "Failed to send booking request. Please try again.",
-  },
-  arm: {
-    title: "",
-    selectDate: "",
-    fullyBooked: "",
-    available: "",
-    selectTime: "",
-    selectHours: "",
-    hours: "",
-    email: "",
-    emailPlaceholder: "",
-    emailError: "",
-    submit: "",
-    submitting: "",
-    success: "",
-    successMessage: "",
-    close: "",
-    noAvailability: "",
-    selectDateFirst: "",
-    emailSent: "",
-    emailFailed: "",
-  }
-};
 
 export const VenueBookingDialog = ({ 
   venue, 
   isOpen, 
   onClose, 
-  language 
 }: VenueBookingDialogProps) => {
-  const t = translations[language];
+  const { language } = useLanguage();
+  const t = translations[language]['venues']['venueBookingDialog'];
+
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>("");
