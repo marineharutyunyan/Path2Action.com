@@ -1,10 +1,20 @@
-import { useRef, useImperativeHandle, forwardRef } from "react";
+import { useRef, useState, useImperativeHandle, forwardRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, CheckCircle2 } from "lucide-react";
+import { Download, CheckCircle2, Edit, Eye } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import html2pdf from "html2pdf.js";
 
+export type PdfMode = "edit" | "read";
+
 export interface StepLaunchRef {
-  downloadPDF: () => void;
+  downloadPDF: (onComplete?: () => void) => void;
 }
 
 interface WizardData {
@@ -16,6 +26,7 @@ interface WizardData {
   };
   targetAudience: {
     primaryAudience: string;
+    participantCount: string;
     ageGroups: string[];
     geographicFocus: string;
     keyStakeholders: string;
@@ -33,6 +44,7 @@ interface WizardData {
   };
   resources: {
     resourceTypes: string[];
+    venueType: string;
     materialsNeeded: string;
     toolsAndEquipment: string;
     venueRequirements: string;
@@ -71,7 +83,22 @@ interface StepLaunchProps {
     campaignPlanTitle: string;
     generatedOn: string;
     planLinkLabel: string;
-    sections: {
+    poweredBy: string;
+    platformName: string;
+    platformUrl: string;
+      pdfModeDialog: {
+        title: string;
+        description: string;
+        editMode: string;
+        editModeDesc: string;
+        readMode: string;
+        readModeDesc: string;
+        download: string;
+        cancel: string;
+      };
+      venueBookingCta: string;
+      venueBookingCtaUrl: string;
+      sections: {
       overview: string;
       campaignName: string;
       goal: string;
@@ -79,6 +106,7 @@ interface StepLaunchProps {
       successMetric: string;
       targetAudience: string;
       primaryAudience: string;
+      participantCount: string;
       ageGroups: string;
       geographicFocus: string;
       keyStakeholders: string;
@@ -92,6 +120,7 @@ interface StepLaunchProps {
       milestones: string;
       resources: string;
       resourceTypes: string;
+      venueType: string;
       materials: string;
       equipment: string;
       venue: string;
@@ -124,12 +153,23 @@ interface StepLaunchProps {
 
 export const StepLaunch = forwardRef<StepLaunchRef, StepLaunchProps>(({ data, planUrl, labels }, ref) => {
   const planRef = useRef<HTMLDivElement>(null);
+  const [showModeDialog, setShowModeDialog] = useState(false);
+  const [pdfMode, setPdfMode] = useState<PdfMode>("edit");
+  const onCompleteRef = useRef<(() => void) | undefined>();
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = (mode?: PdfMode, onComplete?: () => void) => {
+    const selectedMode = mode || pdfMode;
     if (!planRef.current) return;
 
+    // Temporarily toggle link/footer visibility based on mode
+    const linkEl = planRef.current.querySelector("[data-pdf-edit-link]") as HTMLElement | null;
+    if (linkEl) {
+      linkEl.style.display = selectedMode === "edit" ? "block" : "none";
+    }
+
     const campaignName = data.goalSetting.campaignName || "Campaign";
-    const filename = `${campaignName.replace(/\s+/g, "_")}_Plan.pdf`;
+    const suffix = selectedMode === "read" ? "_ReadOnly" : "";
+    const filename = `${campaignName.replace(/\s+/g, "_")}_Plan${suffix}.pdf`;
 
     const opt = {
       margin: [10, 10, 10, 10] as [number, number, number, number],
@@ -139,11 +179,29 @@ export const StepLaunch = forwardRef<StepLaunchRef, StepLaunchProps>(({ data, pl
       jsPDF: { unit: "mm" as const, format: "a4" as const, orientation: "portrait" as const },
     };
 
-    html2pdf().set(opt).from(planRef.current).save();
+    html2pdf().set(opt).from(planRef.current).save().then(() => {
+      // Restore visibility
+      if (linkEl) {
+        linkEl.style.display = "block";
+      }
+      onComplete?.();
+    });
+  };
+
+  const handleDownloadClick = (onComplete?: () => void) => {
+    onCompleteRef.current = onComplete;
+    setShowModeDialog(true);
+  };
+
+  const handleModeConfirm = (mode: PdfMode) => {
+    setPdfMode(mode);
+    setShowModeDialog(false);
+    handleDownloadPDF(mode, onCompleteRef.current);
+    onCompleteRef.current = undefined;
   };
 
   useImperativeHandle(ref, () => ({
-    downloadPDF: handleDownloadPDF,
+    downloadPDF: (onComplete?: () => void) => handleDownloadClick(onComplete),
   }));
 
   const formatDate = (dateStr: string) => {
@@ -159,6 +217,26 @@ export const StepLaunch = forwardRef<StepLaunchRef, StepLaunchProps>(({ data, pl
       return value.join(", ");
     }
     return value;
+  };
+
+  const buildVenueUrl = () => {
+    const baseUrl = `${window.location.origin}/venues`;
+    const params = new URLSearchParams();
+    const venueType = data.resources.venueType;
+    if (venueType === "indoor" || venueType === "outdoor") {
+      params.set("type", venueType);
+    } else if (venueType === "both") {
+      params.set("type", "indoor,outdoor");
+    }
+    const count = data.targetAudience.participantCount;
+    if (count) {
+      const match = count.match(/(\d+)$/);
+      if (match) {
+        params.set("capacity", match[1]);
+      }
+    }
+    const qs = params.toString();
+    return qs ? `${baseUrl}?${qs}` : baseUrl;
   };
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -181,11 +259,48 @@ export const StepLaunch = forwardRef<StepLaunchRef, StepLaunchProps>(({ data, pl
     <div className="space-y-6">
       {/* Download Button */}
       <div className="flex justify-center">
-        <Button onClick={handleDownloadPDF} variant="hero" size="lg" className="gap-2">
+        <Button onClick={() => handleDownloadClick()} variant="hero" size="lg" className="gap-2">
           <Download className="h-5 w-5" />
           {labels.downloadPlan}
         </Button>
       </div>
+
+      {/* PDF Mode Selection Dialog */}
+      <Dialog open={showModeDialog} onOpenChange={setShowModeDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{labels.pdfModeDialog.title}</DialogTitle>
+            <DialogDescription>{labels.pdfModeDialog.description}</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3 py-4">
+            <button
+              onClick={() => handleModeConfirm("edit")}
+              className="flex items-start gap-4 p-4 rounded-lg border-2 border-border hover:border-primary transition-colors text-left"
+            >
+              <Edit className="h-6 w-6 text-primary mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-semibold text-foreground">{labels.pdfModeDialog.editMode}</p>
+                <p className="text-sm text-muted-foreground">{labels.pdfModeDialog.editModeDesc}</p>
+              </div>
+            </button>
+            <button
+              onClick={() => handleModeConfirm("read")}
+              className="flex items-start gap-4 p-4 rounded-lg border-2 border-border hover:border-primary transition-colors text-left"
+            >
+              <Eye className="h-6 w-6 text-primary mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-semibold text-foreground">{labels.pdfModeDialog.readMode}</p>
+                <p className="text-sm text-muted-foreground">{labels.pdfModeDialog.readModeDesc}</p>
+              </div>
+            </button>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShowModeDialog(false)}>
+              {labels.pdfModeDialog.cancel}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Campaign Plan Document */}
       <div
@@ -202,7 +317,7 @@ export const StepLaunch = forwardRef<StepLaunchRef, StepLaunchProps>(({ data, pl
           <p className="text-sm text-muted-foreground mt-2">
             {labels.generatedOn}: {new Date().toLocaleDateString()}
           </p>
-          <p className="text-xs text-muted-foreground mt-3">
+          <p className="text-xs text-muted-foreground mt-3" data-pdf-edit-link>
             {labels.planLinkLabel}:{" "}
             <a 
               href={planUrl} 
@@ -225,6 +340,7 @@ export const StepLaunch = forwardRef<StepLaunchRef, StepLaunchProps>(({ data, pl
         {/* 2. Target Audience */}
         <Section title={`2. ${labels.sections.targetAudience}`}>
           <Field label={labels.sections.primaryAudience} value={renderValue(data.targetAudience.primaryAudience)} />
+          <Field label={labels.sections.participantCount} value={renderValue(data.targetAudience.participantCount)} />
           <Field label={labels.sections.ageGroups} value={renderValue(data.targetAudience.ageGroups)} />
           <Field label={labels.sections.geographicFocus} value={renderValue(data.targetAudience.geographicFocus)} />
           <Field label={labels.sections.keyStakeholders} value={renderValue(data.targetAudience.keyStakeholders)} />
@@ -265,9 +381,37 @@ export const StepLaunch = forwardRef<StepLaunchRef, StepLaunchProps>(({ data, pl
         {/* 5. Resources */}
         <Section title={`5. ${labels.sections.resources}`}>
           <Field label={labels.sections.resourceTypes} value={renderValue(data.resources.resourceTypes)} />
+          <Field label={labels.sections.venueType} value={renderValue(data.resources.venueType)} />
           <Field label={labels.sections.materials} value={renderValue(data.resources.materialsNeeded)} />
           <Field label={labels.sections.equipment} value={renderValue(data.resources.toolsAndEquipment)} />
           <Field label={labels.sections.venue} value={renderValue(data.resources.venueRequirements)} />
+          
+          {/* Venue Booking CTA */}
+          {(() => {
+            const venueUrl = buildVenueUrl();
+            return (
+              <div className="mt-4">
+                <a
+                  href={venueUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-gradient-to-r from-primary to-creative text-primary-foreground rounded-lg p-4 text-center font-semibold hover:opacity-90 transition-opacity no-underline"
+                  style={{
+                    background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--creative)))",
+                    color: "white",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    textAlign: "center",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    display: "block",
+                  }}
+                >
+                  {labels.venueBookingCta}
+                </a>
+              </div>
+            );
+          })()}
         </Section>
 
         {/* 6. Team */}
@@ -376,6 +520,28 @@ export const StepLaunch = forwardRef<StepLaunchRef, StepLaunchProps>(({ data, pl
             </ul>
           </div>
         </Section>
+
+        {/* Path2Action Footer */}
+        <div className="border-t-2 border-border pt-6 mt-8 text-center">
+          <div className="flex items-center justify-center gap-2">
+            <img 
+              src="/favicon.png" 
+              alt="Path2Action logo" 
+              className="h-6 w-6"
+              style={{ height: "24px", width: "24px" }}
+            />
+            <p className="text-sm text-muted-foreground">
+              {labels.poweredBy}{" "}
+              <a 
+                href={labels.platformUrl} 
+                className="font-semibold text-primary hover:underline"
+                style={{ color: "hsl(var(--primary))" }}
+              >
+                {labels.platformName}
+              </a>
+            </p>
+          </div>
+        </div>
       </div>
 
     </div>

@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AIImproveButton } from "./AIImproveButton";
 
 interface StepResourcesProps {
   data: {
     resourceTypes: string[];
+    venueType: string;
     materialsNeeded: string;
     toolsAndEquipment: string;
     venueRequirements: string;
@@ -21,6 +25,15 @@ interface StepResourcesProps {
       food: string;
       equipment: string;
     };
+    venueType: string;
+    venueTypeOptions: {
+      indoor: string;
+      outdoor: string;
+      both: string;
+      online: string;
+      custom: string;
+    };
+    venueTypePlaceholder: string;
     materialsNeeded: string;
     materialsNeededPlaceholder: string;
     toolsAndEquipment: string;
@@ -30,9 +43,24 @@ interface StepResourcesProps {
   };
 }
 
+const venueTypeKeys = ["indoor", "outdoor", "both", "online", "custom"] as const;
+
 export const StepResources = ({ data, onChange, labels }: StepResourcesProps) => {
+  const isPresetType = venueTypeKeys.slice(0, -1).some(k => k === data.venueType);
+  const [showCustomVenue, setShowCustomVenue] = useState(!isPresetType && data.venueType !== "" && data.venueType !== undefined);
+
   const handleChange = (field: keyof typeof data, value: string | string[]) => {
     onChange({ ...data, [field]: value });
+  };
+
+  const handleVenueTypeSelect = (value: string) => {
+    if (value === "custom") {
+      setShowCustomVenue(true);
+      handleChange("venueType", "");
+    } else {
+      setShowCustomVenue(false);
+      handleChange("venueType", value);
+    }
   };
 
   const toggleResourceType = (type: string) => {
@@ -44,6 +72,8 @@ export const StepResources = ({ data, onChange, labels }: StepResourcesProps) =>
   };
 
   const resourceTypeKeys = ["printing", "digital", "venue", "transportation", "food", "equipment"] as const;
+
+  const currentVenueValue = showCustomVenue ? "custom" : (data.venueType || undefined);
 
   return (
     <div className="space-y-6">
@@ -68,6 +98,31 @@ export const StepResources = ({ data, onChange, labels }: StepResourcesProps) =>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Venue Type */}
+      <div className="space-y-2">
+        <Label className="text-base font-medium">{labels.venueType}</Label>
+        <Select value={currentVenueValue} onValueChange={handleVenueTypeSelect}>
+          <SelectTrigger className="h-12">
+            <SelectValue placeholder={labels.venueType} />
+          </SelectTrigger>
+          <SelectContent>
+            {venueTypeKeys.map((key) => (
+              <SelectItem key={key} value={key}>
+                {labels.venueTypeOptions[key]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {showCustomVenue && (
+          <Input
+            value={data.venueType}
+            onChange={(e) => handleChange("venueType", e.target.value)}
+            placeholder={labels.venueTypePlaceholder}
+            className="h-12 mt-2"
+          />
+        )}
       </div>
 
       {/* Materials Needed */}

@@ -118,6 +118,11 @@ export const VenueMap = ({ hoveredVenueId, onMarkerHover, language }: VenueMapPr
 
   return (
     <div className="relative w-full h-full min-h-[400px] rounded-xl overflow-hidden shadow-lg">
+      {!isMapReady && (
+        <div className="absolute inset-0 flex items-center justify-center bg-muted/50 z-10">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <div ref={mapContainer} className="absolute inset-0" />
     </div>
   );

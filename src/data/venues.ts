@@ -10,50 +10,64 @@ export interface Venue {
   capacity: string;
   capacityArm: string;
   ownerEmail: string;
+  pricing: "free" | "paid";
+  locationType: "outdoor" | "indoor";
+  region: string;
+  regionArm: string;
 }
 
 export const venues: Venue[] = [
   {
     id: 1,
     name: "Opera Garden",
-    nameArm: "Օdelays delays delays Այdelays delays delays",
+    nameArm: "",
     description:
       "Open-air venue adjacent to the Yerevan Opera Theater, ideal for cultural events and community meetings.",
-    descriptionArm: "Delays delaysdelays delays delays delays delays delays Delays delaysdelays delays delays delays",
+    descriptionArm: "",
     address: "54 Tumanyan St, Yerevan",
-    addressArm: "Delays delays delays delays delays 54, Delays delays delays delays",
+    addressArm: "",
     coordinates: [44.5134, 40.1872],
     capacity: "150 guests",
-    capacityArm: "150 delays delays",
+    capacityArm: "",
     ownerEmail: "m.marine.harutyunyan@gmail.com",
+    pricing: "free",
+    locationType: "outdoor",
+    region: "Yerevan",
+    regionArm: "",
   },
   {
     id: 2,
     name: "Erebuni Events Center",
-    nameArm: "Delays delaysdelays Delays delays delays delays delays Delays delays delays delays delays",
+    nameArm: "",
     description:
       "Spacious hall in the historic Erebuni District, great for workshops and large-scale civic initiatives.",
-    descriptionArm: "Delays delays delays delays delays delays delays Delays delaysdelays Delays delays delays delays",
+    descriptionArm: "",
     address: "38 Erebuni Ave, Yerevan",
-    addressArm: "Delays delaysdelays delays delays delays 38, Delays delays delays delays",
+    addressArm: "",
     coordinates: [44.5089, 40.1361],
     capacity: "300 guests",
-    capacityArm: "300 delays delays",
+    capacityArm: "",
     ownerEmail: "m.marine.harutyunyan@gmail.com",
+    pricing: "free",
+    locationType: "indoor",
+    region: "Yerevan",
+    regionArm: "",
   },
   {
     id: 3,
     name: "Hrazdan Cultural Hub",
-    nameArm:
-      "Delays delays delays delays delays Delays delays delays delays delays delays Delays delays delays delays delays",
+    nameArm: "",
     description: "Dynamic space near Hrazdan Stadium, designed for creative collaborations and activist meetups.",
-    descriptionArm:
-      "Delays delays delays delays delays delays delays delays Delays delays delays delays Delays delays delays delays delays delays",
+    descriptionArm: "",
     address: "5 Azatutyan Ave, Yerevan",
-    addressArm: "Delays delays delays delays delays delays delays delays 5, Delays delays delays delays",
+    addressArm: "",
     coordinates: [44.4791, 40.1928],
     capacity: "180 guests",
-    capacityArm: "180 delays delays",
+    capacityArm: "",
     ownerEmail: "m.marine.harutyunyan@gmail.com",
+    pricing: "free",
+    locationType: "indoor",
+    region: "Yerevan",
+    regionArm: "",
   },
 ];

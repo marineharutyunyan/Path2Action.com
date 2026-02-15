@@ -43,6 +43,7 @@ interface WizardData {
   };
   targetAudience: {
     primaryAudience: string;
+    participantCount: string;
     ageGroups: string[];
     geographicFocus: string;
     keyStakeholders: string;
@@ -60,6 +61,7 @@ interface WizardData {
   };
   resources: {
     resourceTypes: string[];
+    venueType: string;
     materialsNeeded: string;
     toolsAndEquipment: string;
     venueRequirements: string;
@@ -99,6 +101,7 @@ const initialWizardData: WizardData = {
   },
   targetAudience: {
     primaryAudience: "",
+    participantCount: "",
     ageGroups: [],
     geographicFocus: "",
     keyStakeholders: "",
@@ -116,6 +119,7 @@ const initialWizardData: WizardData = {
   },
   resources: {
     resourceTypes: [],
+    venueType: "",
     materialsNeeded: "",
     toolsAndEquipment: "",
     venueRequirements: "",
@@ -247,15 +251,16 @@ export default function Wizard() {
   };
 
   const handleDownloadAndClose = () => {
-    if (launchRef.current) {
-      launchRef.current.downloadPDF();
-    }
-    // Generate new plan ID and navigate after download (old plan remains in database)
     setShowConfirmDialog(false);
-    const newPlanId = generatePlanId();
-    localStorage.setItem(ACTIVE_PLAN_KEY, newPlanId);
-    setIsInitialLoading(false);
-    navigate(`/wizard/${newPlanId}`);
+    if (launchRef.current) {
+      launchRef.current.downloadPDF(() => {
+        // Navigate to new plan after PDF download completes
+        const newPlanId = generatePlanId();
+        localStorage.setItem(ACTIVE_PLAN_KEY, newPlanId);
+        setIsInitialLoading(false);
+        navigate(`/wizard/${newPlanId}`);
+      });
+    }
   };
 
   // Don't render until we have a valid plan ID
@@ -275,21 +280,28 @@ export default function Wizard() {
     );
   }
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const nextStep = () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(currentStep + 1);
+      scrollToTop();
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      scrollToTop();
     }
   };
 
   const goToStep = (step: number) => {
     if (step >= 1 && step <= TOTAL_STEPS) {
       setCurrentStep(step);
+      scrollToTop();
     }
   };
 
