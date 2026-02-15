@@ -90,7 +90,7 @@ const Venues = () => {
               {t.partnerLocations}
             </h2>
 
-            <VenueFilters
+        <VenueFilters
               search={search}
               onSearchChange={setSearch}
               locationType={locationType}
@@ -103,8 +103,6 @@ const Venues = () => {
               onMaxCapacityChange={setMaxCapacity}
               onClear={clearFilters}
               hasActiveFilters={hasActiveFilters}
-              t={t}
-              language={language}
             />
 
             {filteredVenues.length === 0 ? (

@@ -30,7 +30,7 @@ export const VenueMap = ({ hoveredVenueId, onMarkerHover, language }: VenueMapPr
 
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
 
-    map.current.on("load", () => {
+    map.current.on("load", () => {``
       venues.forEach((venue) => {
         const el = document.createElement("div");
         el.className = "venue-marker";

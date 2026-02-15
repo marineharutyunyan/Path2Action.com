@@ -274,7 +274,7 @@ export default function Wizard() {
       <div className="min-h-screen gradient-hero flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
-          <p className="text-muted-foreground">Loading your plan...</p>
+          <p className="text-muted-foreground">{t.loading}</p>
         </div>
       </div>
     );

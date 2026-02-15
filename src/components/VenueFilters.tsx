@@ -10,6 +10,8 @@ import {
   PopoverTrigger,
 } from "./ui/popover";
 import { ChevronDown } from "lucide-react";
+import {useLanguage} from "@/contexts/LanguageContext.tsx";
+import {translations} from "@/lib/translations.ts";
 
 interface VenueFiltersProps {
   search: string;
@@ -24,8 +26,6 @@ interface VenueFiltersProps {
   onMaxCapacityChange: (value: string) => void;
   onClear: () => void;
   hasActiveFilters: boolean;
-  t: Record<string, string>;
-  language: "en" | "arm";
 }
 
 const availableRegions = [...new Set(venues.map((v) => v.region))];
@@ -51,8 +51,6 @@ export const VenueFilters = ({
   onMaxCapacityChange,
   onClear,
   hasActiveFilters,
-  t,
-  language,
 }: VenueFiltersProps) => {
   const toggleArrayValue = (
     arr: string[],
@@ -63,6 +61,9 @@ export const VenueFilters = ({
       arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value]
     );
   };
+
+  const { language } = useLanguage();
+  const t = translations[language].venues;
 
   return (
     <div className="space-y-3 mb-6">

@@ -73,4 +73,3 @@ export const venues: Venue[] = [
     regionArm: "Երևան",
   },
 ];
-
