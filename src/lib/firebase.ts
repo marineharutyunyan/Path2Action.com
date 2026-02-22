@@ -13,7 +13,7 @@ export type FirebaseRestConfig = {
  *    - VITE_FIREBASE_PROJECT_ID
  */
 export const firebaseRestConfig: FirebaseRestConfig = {
-  apiKey: (import.meta as any).env?.VITE_FIREBASE_API_KEY ?? "AIzaSyAEu2Qhng0E6NiaD7KZJBoKE3eYyyfYA3U",
+  apiKey: (import.meta as any).env?.VITE_FIREBASE_API_KEY ?? "AIzaSyCBzgjMtDknoeCr0NIePZw2XaA80M16KGA",
   projectId: (import.meta as any).env?.VITE_FIREBASE_PROJECT_ID ?? "path2action-b7aec",
 };
 
