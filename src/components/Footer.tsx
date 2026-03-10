@@ -45,26 +45,29 @@ export const Footer = () => {
     <footer className="bg-muted/30 border-t border-border">
       {/* Partners Banner */}
 <div className="border-b border-border pt-10 pb-16" style={{ backgroundColor: "#fefefe" }}>
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex justify-center mb-8">
-            <img
-              src={ddiLogo}
-              alt="Digital Democracy Initiative"
-              className="h-16 md:h-20 object-contain"
-            />
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            {partners.map((partner) => (
-              <img
-                key={partner.alt}
-                src={partner.src}
-                alt={partner.alt}
-                className={`${partner.height} object-contain opacity-70 hover:opacity-100 transition-opacity duration-300`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
+  <div className="container mx-auto px-4 lg:px-8">
+    <div className="flex justify-center mb-8">
+      <img
+          src={ddiLogo}
+          alt="Digital Democracy Initiative"
+          className="h-16 md:h-20 object-contain"
+      />
+    </div>
+    <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+      {partners.map((partner) => (
+          <img
+              key={partner.alt}
+              src={partner.src}
+              alt={partner.alt}
+              className={`${partner.height} object-contain opacity-70 hover:opacity-100 transition-opacity duration-300`}
+          />
+      ))}
+    </div>
+    <p className="text-center text-xs text-muted-foreground mt-6 max-w-2xl mx-auto leading-relaxed">
+      This web page is produced as part of the Hackathon activity under the CIVICUS Digital Democracy Initiative (DDI), implemented by Metamorphosis Foundation in partnership with Civic Literacy Initiative.
+    </p>
+  </div>
+</div>
 
       {/* Footer Links */}
       <div className="container mx-auto px-4 lg:px-8 py-10">
@@ -72,9 +75,9 @@ export const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <NavLink
-              to="/"
-              className="flex items-center"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                to="/"
+                className="flex items-center"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               <img src={ddiLogo} alt="Digital Democracy Initiative" className="h-8 object-contain" />
             </NavLink>
