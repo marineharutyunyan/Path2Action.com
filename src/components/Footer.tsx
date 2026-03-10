@@ -2,6 +2,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
+import ddiLogo from "@/assets/ddi-logo.png";
+import civicusLogo from "@/assets/civicus-logo.png";
+import metamorphosisLogo from "@/assets/metamorphosis-logo.png";
+import cliLogo from "@/assets/cli-logo.png";
+import apyLogo from "@/assets/apy-logo.svg";
 
 export const Footer = () => {
   const { language } = useLanguage();
@@ -29,19 +34,52 @@ export const Footer = () => {
     }
   };
 
+  const partners = [
+    { src: civicusLogo, alt: "CIVICUS", height: "h-14 md:h-16" },
+    { src: metamorphosisLogo, alt: "Metamorphosis Foundation", height: "h-14 md:h-16" },
+    { src: cliLogo, alt: "Civic Literacy Initiative", height: "h-14 md:h-16" },
+    { src: apyLogo, alt: "APY", height: "h-14 md:h-16" },
+  ];
+
   return (
-    <footer className="bg-muted/30 border-t border-border py-12">
-      <div className="container mx-auto px-4 lg:px-8">
+    <footer className="bg-muted/30 border-t border-border">
+      {/* Partners Banner */}
+      <div className="border-b border-border py-10">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex justify-center mb-8">
+            <img
+              src={ddiLogo}
+              alt="Digital Democracy Initiative"
+              className="h-16 md:h-20 object-contain"
+            />
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            {partners.map((partner) => (
+              <img
+                key={partner.alt}
+                src={partner.src}
+                alt={partner.alt}
+                className={`${partner.height} object-contain opacity-70 hover:opacity-100 transition-opacity duration-300`}
+              />
+            ))}
+          </div>
+          <p className="text-center text-xs text-muted-foreground mt-6 max-w-2xl mx-auto leading-relaxed">
+            Path2Action is a project developed under the{" "} Digital Democracy Initiative (DDI), implemented by  CIVICUS,{" "} Metamorphosis Foundation, and the{" "} Civic Literacy Initiative (CLI), with the support of  APY.
+          </p>
+        </div>
+      </div>
+
+      {/* Footer Links */}
+      <div className="container mx-auto px-4 lg:px-8 py-10">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="space-y-4">
             <NavLink
               to="/"
-              className="flex items-center gap-2 text-xl font-bold text-primary"
+              className="flex items-center"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <div className="w-8 h-8 gradient-primary rounded-lg"></div>
-              Path2Action
+              <img src={ddiLogo} alt="Digital Democracy Initiative" className="h-8 object-contain" />
             </NavLink>
             <p className="text-sm text-muted-foreground">{t.tagline}</p>
           </div>

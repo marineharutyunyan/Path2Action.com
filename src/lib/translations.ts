@@ -72,7 +72,7 @@ export const translations = {
       ],
     },
     footer: {
-      tagline: "Empowering young activists to create meaningful change.",
+      tagline: "Path2Action project empowering young activists to create meaningful change.",
       quickLinks: "Quick Links",
       support: "Support",
       legal: "Legal",

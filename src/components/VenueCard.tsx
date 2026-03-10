@@ -75,7 +75,6 @@ export const VenueCard = ({ venue, isHovered, onHover, language }: VenueCardProp
         venue={venue}
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        language={language}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Globe, Menu, X } from "lucide-react";
+import ddiLogo from "@/assets/ddi-logo.png";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -55,11 +56,10 @@ export const Navigation = () => {
           {/* Logo */}
           <NavLink
             to="/"
-            className="flex items-center gap-2 text-xl font-bold text-primary"
+            className="flex items-center"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
-            <div className="w-8 h-8 gradient-primary rounded-lg"></div>
-            Path2Action
+            <img src={ddiLogo} alt="Digital Democracy Initiative" className="h-8 object-contain" />
           </NavLink>
 
           {/* Desktop Navigation */}
