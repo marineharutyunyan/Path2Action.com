@@ -35,8 +35,8 @@ export const Footer = () => {
   };
 
   const partners = [
-    { src: civicusLogo, alt: "CIVICUS", height: "h-14 md:h-16" },
-    { src: metamorphosisLogo, alt: "Metamorphosis Foundation", height: "h-18 md:h-20" },
+    { src: civicusLogo, alt: "CIVICUS", height: "h-18 md:h-20" },
+    { src: metamorphosisLogo, alt: "Metamorphosis Foundation", height: "h-20 md:h-22" },
     { src: cliLogo, alt: "Civic Literacy Initiative", height: "h-18 md:h-20" },
     { src: apyLogo, alt: "APY", height: "h-14 md:h-16" },
   ];
