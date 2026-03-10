@@ -64,7 +64,7 @@ export const Footer = () => {
             ))}
           </div>
           <p className="text-center text-xs text-muted-foreground mt-6 max-w-2xl mx-auto leading-relaxed">
-            Path2Action is a project developed under the{" "} Digital Democracy Initiative (DDI), \n implemented by  CIVICUS,{" "} Metamorphosis Foundation, and the{" "} Civic Literacy Initiative (CLI), with the support of  APY.
+            Path2Action is a project developed under the{" "} Digital Democracy Initiative (DDI)<br />Implemented by  CIVICUS,{" "} Metamorphosis Foundation, and the{" "} Civic Literacy Initiative (CLI), with the support of  APY.
           </p>
         </div>
       </div>
