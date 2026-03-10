@@ -44,7 +44,7 @@ export const Footer = () => {
   return (
     <footer className="bg-muted/30 border-t border-border">
       {/* Partners Banner */}
-<div className="border-b border-border pt-10 pb-14" style={{ backgroundColor: "#fefefe" }}>
+<div className="border-b border-border py-10" style={{ backgroundColor: "#fefefe" }}>
   <div className="container mx-auto px-4 lg:px-8">
     <div className="flex justify-center mb-8">
       <img
@@ -63,7 +63,7 @@ export const Footer = () => {
           />
       ))}
     </div>
-    <p className="text-center text-xs text-muted-foreground mt-10 mx-auto leading-relaxed">
+    <p className="text-center text-xs text-muted-foreground mt-14 mx-auto leading-relaxed">
       This web page is produced as part of the Hackathon activity under the CIVICUS Digital Democracy Initiative (DDI), implemented by Metamorphosis Foundation in partnership with Civic Literacy Initiative.
     </p>
   </div>
