@@ -44,7 +44,7 @@ export const Footer = () => {
   return (
     <footer className="bg-muted/30 border-t border-border">
       {/* Partners Banner */}
-<div className="border-b border-border py-10" style={{ backgroundColor: "#fefefe" }}>
+<div className="border-b border-border pt-10 pb-16" style={{ backgroundColor: "#fefefe" }}>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-center mb-8">
             <img
